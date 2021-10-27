@@ -3,13 +3,20 @@
 {% block content %}
 {% load crispy_forms_tags %}
 <!--Register-->
-<div class="container py-5 ">
-	<h4 class="text-center alert alert-info">EDIT ITEM</h4>
-	<form method="POST">
-		{% csrf_token %}
-		{{ form | crispy }}<br>
-		<button class="btn btn-primary" type="submit">Edit</button>
-	</form>
+<div class="container py-5">
+    <h4 class="text-center alert alert-info">EDIT ITEM</h4>
+    <div class="row">
+        <div class="col-sm-4">
+            <form method="POST">
+                {% csrf_token %}
+                {{ form | crispy }}<br>
+                <button class="btn btn-primary" type="submit">Edit</button>
+            </form>
+        </div>
+        <div class="col-sm-8 align-middle">
+            <img src="{{item.img.url}}" class="rounded" width=500 hiehgt=500 alt="Profile Picture">
+        </div>
+    </div>
 </div>
 
 {% endblock %}

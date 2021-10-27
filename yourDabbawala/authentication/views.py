@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, logout, login
 # Create your views here.
 from .forms import *
-
+from django.contrib.auth.models import Group
 from django.contrib import messages
 from django.contrib.auth.forms import AuthenticationForm,PasswordResetForm
 from django.contrib.auth.decorators import login_required
@@ -16,6 +16,7 @@ from django.db.models.query_utils import Q
 from django.utils.http import urlsafe_base64_encode
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.encoding import force_bytes
+from restaurant.decorators import *
 
 
 def password_reset_request(request):
@@ -54,6 +55,7 @@ def register_request(request):
         if form.is_valid():
             user = form.save()
             login(request, user)
+            
             return redirect("restaurantInfo")
         return render(request=request, template_name="register.html", context={"register_form": form})
     form = NewUserForm()
@@ -83,7 +85,7 @@ def logout_request(request):
     return redirect("login")
 
 
-# @login_required(login_url='/authentication/login/')
+@is_authenticated
 def get_info(request):
     # customer_info = CustomerInfo()
     if request.method == 'POST':
@@ -101,7 +103,7 @@ def get_info(request):
 
     return render(request, 'customerInfo.html', context={"customer_info": customer_info})
 
-
+@is_authenticated
 def restaurant_info(request):
     # customer_info = CustomerInfo()
     if request.method == 'POST':
@@ -123,6 +125,8 @@ def restaurant_info(request):
             restaurant_info.image = res_info.cleaned_data['image']
             print(res_info.cleaned_data['image'])
             restaurant_info.save()
+            group = Group.objects.get(name='restaurant')
+            request.user.groups.add(group)
             return redirect('add_item')
     else:
         print(3)
@@ -130,16 +134,3 @@ def restaurant_info(request):
 
     return render(request, 'restaurant_info.html', context={"form": res_info})
 
-
-
-    #  user = models.OneToOneField(User,to_field="username",db_column="user", on_delete=models.CASCADE, primary_key=True)
-    # name = models.CharField(max_length=200, null=True)
-    # address = models.CharField(max_length=500, null=True)
-    # phone_no = models.CharField(max_length=10, null=True)
-    # bio = models.TextField(blank=True, null=True)
-    # city = models.CharField(max_length=200, default="")
-    # image = models.ImageField(upload_to='images', null=True)
-    # open_time = models.TimeField(null=True)
-    # close_time = models.TimeField(null=True)
-    # active = models.BooleanField(null=True)
-    # meal_price = models.IntegerField()

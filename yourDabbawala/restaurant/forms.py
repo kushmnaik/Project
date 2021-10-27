@@ -6,7 +6,7 @@ class AddItem(forms.ModelForm):
     
     class Meta:
         model = MenuItem
-        fields = ['itemName','itemPrice','discription','category']
-        labels = {'itemName':'Item Name','itemPrice' : 'Price' }
-       
+        exclude = ['restaurant']
+        labels = {'itemName':'Item Name','itemPrice' : 'Price' , 'img':'Image'}
+
 # class RegisterRestaurent(forms. ModelForm):

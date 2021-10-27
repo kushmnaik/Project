@@ -21,7 +21,7 @@
     <div class="row my-5">
         <div class="col-sm-4">
             <h4 class="text-center alert alert-info">ADD ITEM</h4>
-            <form method="POST">
+            <form method="POST" enctype="multipart/form-data">
                 {% csrf_token %}
                 {{ form | crispy }}<br>
                 <button class="btn btn-primary" type="submit">ADD</button>

@@ -23,7 +23,7 @@ class Restaurant(models.Model):
     phone_no = models.CharField(max_length=10, null=True)
     bio = models.TextField(blank=True, null=True)
     city = models.CharField(max_length=200, default="")
-    image = models.ImageField(upload_to='images/',null=True, blank=True)
+    image = models.ImageField(upload_to='images/')
     open_time = models.TimeField(null=True)
     close_time = models.TimeField(null=True)
     active = models.BooleanField(null=True)
@@ -39,6 +39,7 @@ class MenuItem(models.Model):
     discription = models.CharField(max_length=200)
     category = models.CharField(max_length=200, default="")
     restaurant = models.ForeignKey(Restaurant,to_field="user",db_column="restaurant", on_delete=models.CASCADE)
+    img = models.ImageField(upload_to='images/')
 
     def __str__(self):
         return str(self.itemName)+"("+str(self.restaurant)+")"

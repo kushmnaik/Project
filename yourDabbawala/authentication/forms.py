@@ -27,29 +27,25 @@ class CustomerInfo(forms.Form):
     address = forms.CharField(max_length=500)
     phone_no = forms.CharField(max_length=10)
 
-    # def clean(self):
-    #     number = self.cleaned_data['phone_no']
-    #     if re.match('^[\d]{10}$', number):
-    #         raise ValidationError("Passwords did not match")
+    def clean_phone_no(self):
+        number = self.cleaned_data['phone_no']
+        if len(number) != 10:
+            raise ValidationError("Not a valid Number")
+        for i in number:
+            if i not in ['1','2','3','4','5','6','7','8','9','0']:
+                raise ValidationError("Not a valid Number")
+        return number
 
 
 class RestaurantInfo(forms.ModelForm):
     class Meta :
         model = Restaurant
         exclude = ['user','active','meal_price']
-
-
-
-    # name = forms.CharField(max_length=50)
-    # address = forms.CharField(max_length=200, widget=forms.Textarea)
-    # phone_no = forms.CharField(max_length=10)
-    # bio = forms.CharField(max_length = 200, widget=forms.Textarea)
-    # city = forms.CharField(max_length=50)
-    # open_time = forms.TimeField()
-    # close_time = forms.TimeField()
-    # image = forms.ImageField()
-
-    # def clean(self):
-    #     number = self.cleaned_data['phone_no']
-    #     if re.match('^[\d]{10}$', number):
-    #         raise ValidationError("Passwords did not match")
+    def clean_phone_no(self):
+        number = self.cleaned_data['phone_no']
+        if len(number) != 10:
+            raise ValidationError("Not a valid Number")
+        for i in number:
+            if i not in ['1','2','3','4','5','6','7','8','9','0']:
+                raise ValidationError("Not a valid Number")
+        return number
