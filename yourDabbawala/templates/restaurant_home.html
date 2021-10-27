@@ -13,21 +13,38 @@
             <form method="POST">
                 {% csrf_token %}
                 {{ form | crispy }}<br>
-                <button class="btn btn-primary" type="submit">Login</button>
+                <button class="btn btn-primary" type="submit">ADD</button>
             </form>
         </div>
         <div class="col-sm-8">
             <h4 class="text-center alert alert-info">LIST OF ITEM</h4>
 
-            <table>
-                <th>
-                    
-                </th>
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th scope="col">Name</th>
+                        <th scope="col">Price</th>
+                        <th scope="col">Categoty</th>
+                        <th scope="col">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in items %}
+                    <tr>
+                        <td scope="row">{{ item.itemName }}<p style="color : #A2A19F">{{ item.discription }}</p></td>
+                        <td> {{ item.itemPrice }}</td>
+                        <td> {{ item.category }}</td>
+                        <td> 
+                            <form method="post" class="d-inline" action="{% url 'delete_item' item.id %}">
+                                {% csrf_token %}
+                                <a href="{% url 'edit_item' item.id %}" class="btn btn-warning" >Edit</a>
+                                <input type="submit" class="btn btn-danger" value="Delete"></input>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
             </table>
-            <form method="POST">
-                {% csrf_token %}
-                <button class="btn btn-danger" type="delete">Login</button>
-            </form>
         </div>
     </div>
 </div>

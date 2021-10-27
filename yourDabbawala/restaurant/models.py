@@ -23,7 +23,7 @@ class Restaurant(models.Model):
     phone_no = models.CharField(max_length=10, null=True)
     bio = models.TextField(blank=True, null=True)
     city = models.CharField(max_length=200, default="")
-    image = models.ImageField(upload_to='images', null=True)
+    image = models.ImageField(upload_to='images/',null=True, blank=True)
     open_time = models.TimeField(null=True)
     close_time = models.TimeField(null=True)
     active = models.BooleanField(null=True)

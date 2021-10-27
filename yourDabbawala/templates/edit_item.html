@@ -1,0 +1,15 @@
+{% extends "basic.html" %}
+
+{% block content %}
+{% load crispy_forms_tags %}
+<!--Register-->
+<div class="container py-5 ">
+	<h4 class="text-center alert alert-info">EDIT ITEM</h4>
+	<form method="POST">
+		{% csrf_token %}
+		{{ form | crispy }}<br>
+		<button class="btn btn-primary" type="submit">Edit</button>
+	</form>
+</div>
+
+{% endblock %}

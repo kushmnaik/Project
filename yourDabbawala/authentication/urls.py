@@ -10,6 +10,7 @@ urlpatterns = [
     path("login/", login_request, name="login"),
     path("logout/", logout_request, name= "logout"),
     path("Info/",get_info, name='customerInfo'),
+    path("restaurantInfo/",restaurant_info, name='restaurantInfo'),
 
 
     path('password_reset/done/',

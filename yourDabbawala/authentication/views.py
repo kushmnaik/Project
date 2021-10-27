@@ -54,7 +54,7 @@ def register_request(request):
         if form.is_valid():
             user = form.save()
             login(request, user)
-            return redirect("/authentication/Info")
+            return redirect("restaurantInfo")
         return render(request=request, template_name="register.html", context={"register_form": form})
     form = NewUserForm()
     return render(request=request, template_name="register.html", context={"register_form": form})
@@ -69,7 +69,7 @@ def login_request(request):
             user = authenticate(username=username, password=password)
             if user is not None:
                 login(request, user)
-                return redirect('home')
+                return redirect('add_item')
             else:
                 return render(request=request, template_name="login.html", context={"login_form": form})
         else:
@@ -80,7 +80,7 @@ def login_request(request):
 
 def logout_request(request):
     logout(request)
-    return redirect("home")
+    return redirect("login")
 
 
 # @login_required(login_url='/authentication/login/')
@@ -95,8 +95,50 @@ def get_info(request):
             cust_info.address = customer_info.cleaned_data['address']
             cust_info.phone_no = customer_info.cleaned_data['phone_no']
             cust_info.save()
-            return redirect('home')
+            return redirect('add_item')
     else:
         customer_info = CustomerInfo()
 
     return render(request, 'customerInfo.html', context={"customer_info": customer_info})
+
+
+def restaurant_info(request):
+    # customer_info = CustomerInfo()
+    if request.method == 'POST':
+        res_info = RestaurantInfo(request.POST, request.FILES)
+        print(2)
+        if res_info.is_valid():
+            print(1)
+            restaurant_info = Restaurant()
+            restaurant_info.user = request.user
+            restaurant_info.name = res_info.cleaned_data['name']
+            restaurant_info.address = res_info.cleaned_data['address']
+            restaurant_info.phone_no = res_info.cleaned_data['phone_no']
+            restaurant_info.bio = res_info.cleaned_data['bio']
+            restaurant_info.city = res_info.cleaned_data['city']
+            restaurant_info.open_time = res_info.cleaned_data['open_time']
+            restaurant_info.close_time = res_info.cleaned_data['close_time']
+            restaurant_info.active = True
+            restaurant_info.meal_price = 100
+            restaurant_info.image = res_info.cleaned_data['image']
+            restaurant_info.save()
+            return redirect('add_item')
+    else:
+        print(3)
+        res_info = RestaurantInfo()
+
+    return render(request, 'restaurant_info.html', context={"form": res_info})
+
+
+
+    #  user = models.OneToOneField(User,to_field="username",db_column="user", on_delete=models.CASCADE, primary_key=True)
+    # name = models.CharField(max_length=200, null=True)
+    # address = models.CharField(max_length=500, null=True)
+    # phone_no = models.CharField(max_length=10, null=True)
+    # bio = models.TextField(blank=True, null=True)
+    # city = models.CharField(max_length=200, default="")
+    # image = models.ImageField(upload_to='images', null=True)
+    # open_time = models.TimeField(null=True)
+    # close_time = models.TimeField(null=True)
+    # active = models.BooleanField(null=True)
+    # meal_price = models.IntegerField()

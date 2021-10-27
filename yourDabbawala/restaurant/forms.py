@@ -3,7 +3,10 @@ from .models import *
 
 
 class AddItem(forms.ModelForm):
+    
     class Meta:
         model = MenuItem
         fields = ['itemName','itemPrice','discription','category','restaurant']
-        label = {'itemName':'Item Name','itemPrice' : 'Price' }
+        labels = {'itemName':'Item Name','itemPrice' : 'Price' }
+       
+# class RegisterRestaurent(forms. ModelForm):
