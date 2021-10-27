@@ -6,6 +6,17 @@
 
 {% load crispy_forms_tags %}
 
+
+<div class="container m-5 col-3">
+    <a href="{% url 'edit_profile' %}">
+    <table class="table">
+        <tr>
+            <td><img src="{{restaurant.image.url}}" class="rounded-circle" width=150 hiehgt=150 alt="Profile Picture"></td>
+            <td class="text-center align-middle"><h3>{{ restaurant.user }}</h3></td>
+        </tr>
+    </table>
+    </a>
+</div>
 <div class="container  ">
     <div class="row my-5">
         <div class="col-sm-4">
@@ -31,13 +42,14 @@
                 <tbody>
                     {% for item in items %}
                     <tr>
-                        <td scope="row">{{ item.itemName }}<p style="color : #A2A19F">{{ item.discription }}</p></td>
+                        <td scope="row">{{ item.itemName }}<p style="color : #A2A19F">{{ item.discription }}</p>
+                        </td>
                         <td> {{ item.itemPrice }}</td>
                         <td> {{ item.category }}</td>
-                        <td> 
+                        <td>
                             <form method="post" class="d-inline" action="{% url 'delete_item' item.id %}">
                                 {% csrf_token %}
-                                <a href="{% url 'edit_item' item.id %}" class="btn btn-warning" >Edit</a>
+                                <a href="{% url 'edit_item' item.id %}" class="btn btn-warning">Edit</a>
                                 <input type="submit" class="btn btn-danger" value="Delete"></input>
                             </form>
                         </td>

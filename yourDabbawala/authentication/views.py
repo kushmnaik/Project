@@ -121,6 +121,7 @@ def restaurant_info(request):
             restaurant_info.active = True
             restaurant_info.meal_price = 100
             restaurant_info.image = res_info.cleaned_data['image']
+            print(res_info.cleaned_data['image'])
             restaurant_info.save()
             return redirect('add_item')
     else:
