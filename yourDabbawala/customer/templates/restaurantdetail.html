@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block title %}{{restaurant.name}}{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row my-5">
+        <div class="col-lg-6">
+            <img src="{{restaurant.image.url}}" class="img-fluid img-thumbnail"
+                style="height: 24rem; object-fit: contain;" alt="">
+        </div>
+        <div class="col-lg-6 align-self-center">
+            <h2>{{restaurant.name}}</h2>
+            <p><span class="fw-bold">Address:</span> {{restaurant.address}}</p>
+            <p><span class="fw-bold">Phone no.:</span> {{restaurant.phone}}</p>
+            <p>{{restaurant.bio}}</p>
+        </div>
+    </div>
+    <hr>
+    <h3>MENU</h3>
+    <div>
+        {% for x in restaurant.menuitem_set.all %}
+        <div class="card m-5">
+            <div class="d-flex align-items-center">
+                <div class="flex-shrink-0">
+                    <img src="{{x.image.url}}" class="img-fluid" alt="...">
+                </div>
+                <div class="flex-grow-1 ms-3">
+                    <h4>{{x.name}}</h4>
+                    <p>Rs. {{x.price}}</p>
+                    <p>{{x.desc}}</p>
+                </div>
+                <div class="flex-shrink-0 m-4">
+                    <a href="{% url 'customer:addtocart' x.id %}"><button type="button"
+                            class="btn btn-primary">ADD</button></a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

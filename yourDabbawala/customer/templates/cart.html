@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block title %}Cart{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="d-flex justify-content-around m-4">
+        <a href="{% url 'customer:restaurantdetail' order.restaurant.id %}" class="btn btn-secondary">Add more
+            items</a>
+        {% if order.items.all|length != 0 %}
+        <a href="{% url 'customer:checkout' %}" class="btn btn-success">Checkout</a>
+        {% endif %}
+    </div>
+    <hr>
+    <div class="row m-4 justify-content-center">
+        <div class="col-8">
+            {% if order.items.all|length == 0 %}
+            <h2 class="text-center mb-3">Your Shopping Cart is Empty!</h2>
+            {% else %}
+            <h2 class="text-center mb-3">Order Summary</h2>
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th scope="col">Item</th>
+                        <th scope="col">Price</th>
+                        <th scope="col">Quantity</th>
+                        <th scope="col">Total</th>
+                        <th scope="col"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in order.items.all %}
+                    <tr>
+                        <td>{{ item.menu_item.name }}</td>
+                        <td>Rs. {{ item.menu_item.price | floatformat:2 }}</td>
+                        <td>
+                            <a href="{% url 'customer:decreaseqty' item.id %}" class="badge bg-warning text-dark me-3"
+                                style="color: black;text-decoration: none;">-</a>
+                            {{ item.quantity }}
+                            <a href="{% url 'customer:increaseqty' item.id %}" class="badge bg-warning text-dark ms-3"
+                                style="color: black;text-decoration: none;">+</a>
+                        </td>
+                        <td>Rs. {{ item.amount }} </td>
+                        <td><a href="{% url 'customer:deletefromcart' item.id %}"
+                                class="btn btn-danger btn-sm">Delete</a></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <div class="d-flex justify-content-around align-items-center">
+                <p><strong>Items:</strong> {{ order.total_cart_items }}</p>
+                <p><strong>Total:</strong> Rs. {{ order.total_cart_amount }}</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

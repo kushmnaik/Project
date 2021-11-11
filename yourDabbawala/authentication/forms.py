@@ -25,10 +25,10 @@ class NewUserForm(UserCreationForm):
 class CustomerInfo(forms.Form):
     name = forms.CharField(max_length=200)
     address = forms.CharField(max_length=500)
-    phone_no = forms.CharField(max_length=10)
+    phone = forms.CharField(max_length=10)
 
     def clean_phone_no(self):
-        number = self.cleaned_data['phone_no']
+        number = self.cleaned_data['phone']
         if len(number) != 10:
             raise ValidationError("Not a valid Number")
         for i in number:
@@ -42,7 +42,7 @@ class RestaurantInfo(forms.ModelForm):
         model = Restaurant
         exclude = ['user','active','meal_price']
     def clean_phone_no(self):
-        number = self.cleaned_data['phone_no']
+        number = self.cleaned_data['phone']
         if len(number) != 10:
             raise ValidationError("Not a valid Number")
         for i in number:

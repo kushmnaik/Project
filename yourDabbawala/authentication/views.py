@@ -17,7 +17,7 @@ from django.utils.http import urlsafe_base64_encode
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.encoding import force_bytes
 from restaurant.decorators import *
-
+from django.conf import settings
 
 def password_reset_request(request):
     if request.method == "POST":
@@ -40,7 +40,7 @@ def password_reset_request(request):
                     }
                     email = render_to_string(email_template_name, c)
                     try:
-                        send_mail(subject, email, 'admin@example.com', [user.email], fail_silently=False)
+                        send_mail(subject, email,settings.EMAIL_HOST_USER , [user.email], fail_silently=False)
                     except BadHeaderError:
                         return HttpResponse('Invalid header found.')
                     return redirect("/authentication/password_reset/done/")
@@ -55,8 +55,24 @@ def register_request(request):
         if form.is_valid():
             user = form.save()
             login(request, user)
-            
-            return redirect("restaurantInfo")
+            subject = "Welcome to our family :)"
+            email_template_name = "password/email_sent.txt"
+            c = {
+                "email": user.email,
+                'domain': '127.0.0.1:8000',
+                'site_name': 'Website',
+                "uid": urlsafe_base64_encode(force_bytes(user.pk)),
+                "user": user,
+                'token': default_token_generator.make_token(user),
+                'protocol': 'http',
+            }
+            email = render_to_string(email_template_name, c)
+            try:
+                send_mail(subject, email,settings.EMAIL_HOST_USER , [user.email], fail_silently=False)
+            except BadHeaderError:
+                return HttpResponse('Invalid header found.')
+            # return redirect("/authentication/password_reset/done/")
+            return redirect("email_sent")
         return render(request=request, template_name="register.html", context={"register_form": form})
     form = NewUserForm()
     return render(request=request, template_name="register.html", context={"register_form": form})
@@ -71,13 +87,22 @@ def login_request(request):
             user = authenticate(username=username, password=password)
             if user is not None:
                 login(request, user)
-                return redirect('add_item')
+                group = 'customer'
+                if request.user.groups.exists():
+                    group = request.user.groups.all()[0].name
+                if 'customer' ==  group :
+                    return redirect('customer:home')
+                else :
+                    return redirect('add_item')
             else:
                 return render(request=request, template_name="login.html", context={"login_form": form})
         else:
             return render(request=request, template_name="login.html", context={"login_form": form})
     form = AuthenticationForm()
     return render(request=request, template_name="login.html", context={"login_form": form})
+
+def email_sent(request):
+    return render(request, 'email_sent.html')
 
 
 def logout_request(request):
@@ -95,9 +120,11 @@ def get_info(request):
             cust_info.user = request.user
             cust_info.name = customer_info.cleaned_data['name']
             cust_info.address = customer_info.cleaned_data['address']
-            cust_info.phone_no = customer_info.cleaned_data['phone_no']
+            cust_info.phone = customer_info.cleaned_data['phone']
+            group = Group.objects.get(name='customer')
+            request.user.groups.add(group)
             cust_info.save()
-            return redirect('add_item')
+            return redirect('home')
     else:
         customer_info = CustomerInfo()
 
@@ -115,7 +142,7 @@ def restaurant_info(request):
             restaurant_info.user = request.user
             restaurant_info.name = res_info.cleaned_data['name']
             restaurant_info.address = res_info.cleaned_data['address']
-            restaurant_info.phone_no = res_info.cleaned_data['phone_no']
+            restaurant_info.phone = res_info.cleaned_data['phone']
             restaurant_info.bio = res_info.cleaned_data['bio']
             restaurant_info.city = res_info.cleaned_data['city']
             restaurant_info.open_time = res_info.cleaned_data['open_time']

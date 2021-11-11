@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block title %}Order details{% endblock %}
+
+{% block content %}
+<div class="container m-5">
+    <div class="row">
+        <div class="col-lg-6">
+            <h3>Order Details</h3>
+            <p><span class="fw-bold">Customer name:</span> {{order.customer.name}}</p>
+            <p><span class="fw-bold">Restaurant name:</span> <a
+                    href="{% url 'customer:restaurantdetail' order.restaurant.id %}" style="color: black;text-decoration: none;">{{order.restaurant.name}}</a></p>
+            <p><span class="fw-bold">Restaurant address:</span> {{order.restaurant.address}}</p>
+            <p><span class="fw-bold">Order date:</span> {{order.order_date}}</p>
+            <p><span class="fw-bold">Total items:</span> {{order.total_cart_items}}</p>
+            <p><span class="fw-bold">Total aamount:</span> Rs. {{order.total_cart_amount}}</p>
+        </div>
+        <div class="col-lg-6">
+            <h3>Order Items</h3>
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th scope="col">Item</th>
+                        <th scope="col">Price</th>
+                        <th scope="col">Quantity</th>
+                        <th scope="col">Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in order.items.all %}
+                    <tr>
+                        <td>{{ item.menu_item.name }}</td>
+                        <td>Rs. {{ item.menu_item.price }}</td>
+                        <td>{{ item.quantity }}</td>
+                        <td>Rs. {{ item.amount }} </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

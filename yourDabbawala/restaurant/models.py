@@ -6,10 +6,10 @@ from django.contrib.auth.models import User
 
 
 class Customer(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=200, null=True)
     address = models.CharField(max_length=500, null=True)
-    phone_no = models.CharField(max_length=10, null=True)
+    phone = models.CharField(max_length=10, null=True)
     # bio = models.TextField(blank=True, null=True)
 
     def __str__(self):
@@ -17,10 +17,10 @@ class Customer(models.Model):
 
 
 class Restaurant(models.Model):
-    user = models.OneToOneField(User,to_field="username",db_column="user", on_delete=models.CASCADE, primary_key=True)
+    user = models.OneToOneField(User,on_delete=models.CASCADE)
     name = models.CharField(max_length=200, null=True)
     address = models.CharField(max_length=500, null=True)
-    phone_no = models.CharField(max_length=10, null=True)
+    phone = models.CharField(max_length=10, null=True)
     bio = models.TextField(blank=True, null=True)
     city = models.CharField(max_length=200, default="")
     image = models.ImageField(upload_to='images/')
@@ -34,66 +34,36 @@ class Restaurant(models.Model):
 
 
 class MenuItem(models.Model):
-    itemName = models.CharField(max_length=200)
-    itemPrice = models.IntegerField()
-    discription = models.CharField(max_length=200)
-    category = models.CharField(max_length=200, default="")
-    restaurant = models.ForeignKey(Restaurant,to_field="user",db_column="restaurant", on_delete=models.CASCADE)
-    img = models.ImageField(upload_to='images/')
+    name = models.CharField(max_length=200)
+    price = models.PositiveIntegerField()
+    desc = models.TextField(blank=True)
+    image = models.ImageField(upload_to='images', blank=True)
+    restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE)
 
     def __str__(self):
-        return str(self.itemName)+"("+str(self.restaurant)+")"
-
-
-# class MealItem(models.Model):
-#     itemName = models.CharField(max_length=200)
-#     discription = models.CharField(max_length=200)
-#     day = models.CharField(max_length=200)
-#     restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE, null=True)
-#
-#     def __str__(self):
-#         return self.itemName +"("+str(self.id)+")"
+        return self.name + "-" + self.restaurant.name
 
 
 class OrderItem(models.Model):
-    menu_item = models.ForeignKey(MenuItem, on_delete=models.CASCADE, null=True, blank=True)
-    quantity = models.IntegerField(default=1, null=True)
-    # meal_item = models.ForeignKey(MealItem, on_delete=models.CASCADE, null=True, blank=True)
+    menu_item = models.ForeignKey(MenuItem, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField(default=1)
 
     def __str__(self):
-        return self.menu_item.itemName
+        return str(self.quantity) + self.menu_item.name
 
     @property
     def amount(self):
-        if MenuItem is not None:
-            total = self.menu_item.itemPrice * self.quantity
-
+        total = self.menu_item.price * self.quantity
         return total
-
-
-PAYMENT_CHOICES = (
-    ('cod', 'Cash on delivery'),
-    ('card', 'credit/debit cards'),
-)
-
 
 class Order(models.Model):
-    customer = models.ForeignKey(Customer, on_delete=models.CASCADE, null=True)
-    restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE, null=True)
+    customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
+    restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE)
     items = models.ManyToManyField(OrderItem)
-    order_date = models.DateTimeField(auto_now_add=True, null=True)
-    delivery_address = models.TextField(null=True)
-    payment_mode = models.CharField(choices=PAYMENT_CHOICES, max_length=30, null=True)
-    complete = models.BooleanField(default=False, null=True)
+    order_date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return self.customer.name
-
-    @property
-    def total_cart_amount(self):
-        items = self.items.all()
-        total = sum([item.amount for item in items])
-        return total
+        return self.customer.name + self.restaurant.name
 
     @property
     def total_cart_items(self):
@@ -101,4 +71,8 @@ class Order(models.Model):
         total = sum([item.quantity for item in items])
         return total
 
-
+    @property
+    def total_cart_amount(self):
+        items = self.items.all()
+        total = sum([item.amount for item in items])
+        return total

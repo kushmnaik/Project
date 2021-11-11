@@ -9,8 +9,9 @@ urlpatterns = [
     path("register/", register_request, name="register"),
     path("login/", login_request, name="login"),
     path("logout/", logout_request, name= "logout"),
-    path("Info/",get_info, name='customerInfo'),
+    path("customerInfo/",get_info, name='customerInfo'),
     path("restaurantInfo/",restaurant_info, name='restaurantInfo'),
+    path("email_sent/",email_sent, name='email_sent'),
 
 
     path('password_reset/done/',

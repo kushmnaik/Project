@@ -1,0 +1,13 @@
+{% autoescape off %}
+Hello,
+
+We received a request to register to our websit. To initiate registeration process for your account, click the link below.
+
+http://127.0.0.1:8000/authentication/restaurantInfo/
+
+
+
+Sincerely,
+The Website Team
+
+{% endautoescape %}
