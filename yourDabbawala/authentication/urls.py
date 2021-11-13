@@ -11,6 +11,7 @@ urlpatterns = [
     path("logout/", logout_request, name= "logout"),
     path("customerInfo/",get_info, name='customerInfo'),
     path("restaurantInfo/",restaurant_info, name='restaurantInfo'),
+    path("deliveryInfo/",get_info_delivery_boy, name='deliveryInfo'),
     path("email_sent/",email_sent, name='email_sent'),
 
 

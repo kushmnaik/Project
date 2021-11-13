@@ -8,5 +8,7 @@ urlpatterns = [
     path('edit/<int:id>/',edit_item, name='edit_item'),
     path('edit_profile/', edit_profile, name='edit_profile'),
     path('contactus/', contactUs, name='contactUs'),
-     path('about/', aboutUs, name='about')
+    path('orders/', Orders, name='orders'),
+    path('orderDetail/<int:id>/', orderDetail, name='orderdetail'),
+    path('about/', aboutUs, name='about')
 ]

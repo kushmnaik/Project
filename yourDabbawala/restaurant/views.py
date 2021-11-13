@@ -4,6 +4,7 @@ from django.contrib import messages
 from django.http import  HttpResponseRedirect
 from authentication.forms import *
 from .decorators import *
+from django.db.models import Q
 
 
 @is_authenticated
@@ -90,7 +91,24 @@ def edit_profile(request):
 
     return render(request, 'restaurant_info.html', context={"form": res_info})
     
+@allowed_users(['restaurant'])    
+def Orders(request):
+    orders =  Order.objects.filter(Q(restaurant=request.user.restaurant.id)).filter( Q(status='1')|Q(status='2')|Q(status='3')).order_by('order_date')
 
+    return render(request,'orders.html', context={'orders':orders})
+
+def orderDetail(request,id):
+    if request.method=='POST':
+        item = Order.objects.get(pk=id)
+        form = OrderDetail(request.POST,instance=item)
+        if form.is_valid():
+            item.status = form.cleaned_data['status']
+            item.save()
+            return redirect('orders')
+    else :
+        item = Order.objects.get(pk=id)
+        form = OrderDetail(instance=item)
+    return render(request, 'order_detail.html', context={"form":form, 'order':item})
 
 def aboutUs(request):
     return render(request, 'about.html')

@@ -92,8 +92,11 @@ def login_request(request):
                     group = request.user.groups.all()[0].name
                 if 'customer' ==  group :
                     return redirect('customer:home')
-                else :
+                elif 'restaurant' ==  group:
                     return redirect('add_item')
+                elif 'delivery' == group:
+                    return redirect('deliveryHome')
+                    
             else:
                 return render(request=request, template_name="login.html", context={"login_form": form})
         else:
@@ -129,6 +132,27 @@ def get_info(request):
         customer_info = CustomerInfo()
 
     return render(request, 'customerInfo.html', context={"customer_info": customer_info})
+
+
+@is_authenticated
+def get_info_delivery_boy(request):
+   
+    if request.method == 'POST':
+        delivery_boy = DeliveryInfo(request.POST)
+        if delivery_boy.is_valid():
+            delivery_info = Delivery()
+            delivery_info.user = request.user
+            delivery_info.name = delivery_boy.cleaned_data['name']
+            delivery_info.address = delivery_boy.cleaned_data['address']
+            delivery_info.phone = delivery_boy.cleaned_data['phone']
+            group = Group.objects.get(name='delivery')
+            request.user.groups.add(group)
+            delivery_info.save()
+            return redirect('deliveryHome')
+    else:
+        delivery_boy = DeliveryInfo()
+
+    return render(request, 'deliveryinfo.html', context={"form": delivery_boy})
 
 @is_authenticated
 def restaurant_info(request):

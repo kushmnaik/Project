@@ -1,0 +1,60 @@
+{% extends "basic.html" %}
+{% block head %}
+
+{% endblock %}
+
+{% block content %}
+
+{% load crispy_forms_tags %}
+
+
+
+<div class="container m-5">
+    <div class="row">
+        <div class="col-lg-6">
+            <h3>Order Details</h3>
+            <p><span class="fw-bold">Customer name:</span> {{order.customer.name}}</p>
+            <p><span class="fw-bold">Restaurant name:</span> {{order.restaurant.name}}</p>
+            <p><span class="fw-bold">customer address:</span> {{order.customer.address}}</p>
+            <p><span class="fw-bold">Order date:</span> {{order.order_date}}</p>
+            <p><span class="fw-bold">Total items:</span> {{order.total_cart_items}}</p>
+            <p><span class="fw-bold">Total aamount:</span> Rs. {{order.total_cart_amount}}</p>
+        </div>
+        <div class="col-lg-6">
+            <h3>Order Items</h3>
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th scope="col">Item</th>
+                        <th scope="col">Price</th>
+                        <th scope="col">Quantity</th>
+                        <th scope="col">Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in order.items.all %}
+                    <tr>
+                        <td>{{ item.menu_item.name }}</td>
+                        <td>Rs. {{ item.menu_item.price }}</td>
+                        <td>{{ item.quantity }}</td>
+                        <td>Rs. {{ item.amount }} </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div>
+        <h4 class="text-center alert alert-info col-4">CHANGE ORDER STATUS</h4>
+        <form method='post'>
+            {% csrf_token %}
+            {{ form | crispy }}<br>
+            <button class="btn btn-primary" type="submit">Change status</button>
+        </form>
+
+    </div>
+</div>
+
+
+
+{% endblock %}

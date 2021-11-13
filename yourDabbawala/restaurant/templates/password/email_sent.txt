@@ -10,6 +10,10 @@ if you are a restaurant owner ;)
 http://127.0.0.1:8000/authentication/restaurantInfo/
 
 
+if you are a delivery boy ;)
+http://127.0.0.1:8000/authentication/deliveryInfo/
+
+
 
 Sincerely,
 The Website Team

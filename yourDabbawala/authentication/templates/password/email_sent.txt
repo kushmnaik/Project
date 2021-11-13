@@ -2,8 +2,16 @@
 Hello,
 
 We received a request to register to our websit. To initiate registeration process for your account, click the link below.
+if you are a customer
+http://127.0.0.1:8000/authentication/customerInfo/
 
+
+if you are a restaurant owner ;)
 http://127.0.0.1:8000/authentication/restaurantInfo/
+
+
+if you are a delivery boy ;)
+http://127.0.0.1:8000/authentication/deliveryInfo/
 
 
 

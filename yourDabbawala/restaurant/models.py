@@ -4,13 +4,22 @@ from django.db import models
 from django.db import models
 from django.contrib.auth.models import User
 
+class Delivery(models. Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    name = models.CharField(max_length=200, null=True)
+    address = models.CharField(max_length=500, null=True)
+    phone = models.CharField(max_length=10, null=True)
+
+
+    def __str__(self):
+        return self.name +"("+str(self.user)+")"
+
 
 class Customer(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=200, null=True)
     address = models.CharField(max_length=500, null=True)
     phone = models.CharField(max_length=10, null=True)
-    # bio = models.TextField(blank=True, null=True)
 
     def __str__(self):
         return self.name +"("+str(self.user)+")"
@@ -47,7 +56,7 @@ class MenuItem(models.Model):
 class OrderItem(models.Model):
     menu_item = models.ForeignKey(MenuItem, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField(default=1)
-
+    
     def __str__(self):
         return str(self.quantity) + self.menu_item.name
 
@@ -61,6 +70,8 @@ class Order(models.Model):
     restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE)
     items = models.ManyToManyField(OrderItem)
     order_date = models.DateTimeField(auto_now_add=True)
+    choices = [('0','not placed'),('1','placed'),('2','ready'),('3','delivered')]
+    status = models.CharField(max_length=1, choices=choices, default="")
 
     def __str__(self):
         return self.customer.name + self.restaurant.name

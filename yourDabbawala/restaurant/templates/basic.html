@@ -38,7 +38,9 @@
       <a href="/authentication/register"><button class="btn btn-outline-primary mx-3" float=left>SignUp</button></a>
       <a href="/authentication/login"><button class="btn btn-outline-success" float=left>LogIn</button></a>
       {% else %}
-      <a href="/authentication/logout"><button class="btn btn-outline-danger" float=left>LogOut</button></a>
+      <a href="{% url 'orders' %}"><button class="btn btn-outline-success" float=left>orders</button></a>
+      <a href="/authentication/logout"><button class="btn btn-outline-danger m-2" float=left>LogOut</button></a>
+      
       {% endif %}
 
 
