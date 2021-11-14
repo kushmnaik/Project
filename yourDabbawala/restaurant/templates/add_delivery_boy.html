@@ -1,0 +1,54 @@
+{% extends "basic.html" %}
+{% block head %}
+
+{% endblock %}
+{% block content %}
+
+{% load crispy_forms_tags %}
+
+
+
+<div class="container  ">
+    <div class="row my-5">
+        <div class="col-sm-4">
+            <h4 class="text-center alert alert-info">ADD Delivery boy</h4>
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ form | crispy }}<br>
+                <button class="btn btn-primary" type="submit">ADD</button>
+            </form>
+
+        </div>
+        <div class="col-sm-8">
+            <h4 class="text-center alert alert-info">LIST OF DELIVERY PERSONS</h4>
+
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th scope="col">Name</th>
+                        <th scope="col">phone no.</th>
+                        <th scope="col">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in items %}
+                    <tr>
+                        <td scope="row">{{ item.name }}</td>
+                        <td> {{ item.phone }}</td>
+                        <td>
+                            <form method="post" class="d-inline" action="{% url 'delete_delivery' item.id %}">
+                                {% csrf_token %}
+                                <input type="submit" class="btn btn-danger" value="Delete"></input>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+
+{% endblock %}

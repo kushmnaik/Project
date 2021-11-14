@@ -4,15 +4,8 @@ from django.db import models
 from django.db import models
 from django.contrib.auth.models import User
 
-class Delivery(models. Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    name = models.CharField(max_length=200, null=True)
-    address = models.CharField(max_length=500, null=True)
-    phone = models.CharField(max_length=10, null=True)
 
 
-    def __str__(self):
-        return self.name +"("+str(self.user)+")"
 
 
 class Customer(models.Model):
@@ -40,6 +33,19 @@ class Restaurant(models.Model):
 
     def __str__(self):
         return self.name+"("+str(self.user)+")"
+
+
+
+class Delivery(models. Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    name = models.CharField(max_length=200, null=True)
+    address = models.CharField(max_length=500, null=True)
+    phone = models.CharField(max_length=10, null=True)
+    active = models.BooleanField(default=False)
+    restaurant = models.OneToOneField(Restaurant, on_delete=models.CASCADE,null=True, blank=True)
+
+    def __str__(self):
+        return str(self.user)
 
 
 class MenuItem(models.Model):
@@ -72,6 +78,7 @@ class Order(models.Model):
     order_date = models.DateTimeField(auto_now_add=True)
     choices = [('0','not placed'),('1','placed'),('2','ready'),('3','delivered')]
     status = models.CharField(max_length=1, choices=choices, default="")
+    delivery = models.ForeignKey(Delivery, on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self):
         return self.customer.name + self.restaurant.name

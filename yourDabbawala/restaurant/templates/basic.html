@@ -38,7 +38,7 @@
       <a href="/authentication/register"><button class="btn btn-outline-primary mx-3" float=left>SignUp</button></a>
       <a href="/authentication/login"><button class="btn btn-outline-success" float=left>LogIn</button></a>
       {% else %}
-      <a href="{% url 'orders' %}"><button class="btn btn-outline-success" float=left>orders</button></a>
+      
       <a href="/authentication/logout"><button class="btn btn-outline-danger m-2" float=left>LogOut</button></a>
       
       {% endif %}
@@ -46,6 +46,14 @@
 
     </div>
   </nav>
+  {% if messages %}
+  {% for message in messages %}
+  <div class="alert alert-warning alert-dismissible fade show" role="alert">
+    {{message}}
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  </div>
+  {% endfor %}
+  {% endif %}
 
   
 

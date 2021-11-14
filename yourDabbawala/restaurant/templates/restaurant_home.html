@@ -6,17 +6,25 @@
 
 {% load crispy_forms_tags %}
 
-
-<div class="container m-5 col-3">
-    <a href="{% url 'edit_profile' %}">
-    <table class="table">
-        <tr>
-            <td><img src="{{restaurant.image.url}}" class="rounded-circle" width=150 hiehgt=150 alt="Profile Picture"></td>
-            <td class="text-center align-middle"><h3>{{ restaurant.user }}</h3></td>
-        </tr>
-    </table>
-    </a>
+<div class="container">
+    <div class='row'>
+        <div class=" col-4 ">
+            <a href="{% url 'edit_profile' %}">
+            <table class="table">
+                <tr>
+                    <td><img src="{{restaurant.image.url}}" class="rounded-circle" width=150 hiehgt=150 alt="Profile Picture"></td>
+                    <td class="text-center align-middle"><h3>{{ restaurant.name }}</h3></td>
+                </tr>
+            </table>
+            </a>
+        </div>
+        <div class="col-8 m-2">
+            <a href="{% url 'add_delivery_boy' %}"><button class="btn btn-outline-warning" float=left>delivery</button></a> 
+            <a href="{% url 'orders' %}"><button class="btn btn-outline-success" float=left>orders</button></a>
+        </div>
+    </div>
 </div>
+
 <div class="container  ">
     <div class="row my-5">
         <div class="col-sm-4">

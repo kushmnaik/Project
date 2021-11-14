@@ -35,3 +35,29 @@ def is_owner(view_func):
             return render(request,'Login_required.html')
     return wrapper_func
 
+
+def is_order_owner(view_func):
+    def wrapper_func(request,id, *args, **kwargs ):
+        if request.user == Order.objects.get(pk=id).restaurant.user:
+            return view_func(request,id, *args, **kwargs)
+        else :
+            return render(request,'Login_required.html')
+    return wrapper_func
+
+def is_delivery_order_owner(view_func):
+    def wrapper_func(request,id, *args, **kwargs ):
+        if request.user == Order.objects.get(pk=id).delivery.user:
+            return view_func(request,id, *args, **kwargs)
+        else :
+            return render(request,'Login_required.html')
+    return wrapper_func
+
+def is_delivery_owner(view_func):
+    def wrapper_func(request,id, *args, **kwargs ):
+        if request.user == Delivery.objects.get(pk=id).restaurant.user:
+            print(1)
+            return view_func(request,id, *args, **kwargs)
+        else :
+            return render(request,'Login_required.html')
+    return wrapper_func
+

@@ -10,13 +10,13 @@
 
 <div class="container m-5 ">
         <div class="col-sm-8">
-            <h4 class="text-center alert alert-info">LIST OF ORDERS</h4>
+            <h4 class="text-center alert alert-info">ASSIGNED ORDERS</h4>
 
             <table class="table table-hover ">
                 <thead>
                     <tr>
                         <th scope="col">#</th>
-                        <th scope="col">Customer</th>
+                        <th scope="col">Restaurant</th>
                         <th scope="col">Amount</th>
                         <th scope="col">Order date</th>
                         <th scope="col">status</th>
@@ -37,11 +37,11 @@
                     {% endifequal %}
                     
                         <td>{{ forloop.counter }}</td>
-                        <td>{{ order.customer.name }}</td>
+                        <td>{{ order.restaurant.name }}</td>
                         <td>Rs. {{ order.total_cart_amount }}</td>
                         <td>{{ order.order_date }}</td>
-                        <td>{{ order.get_status_display }}</td>
-                        <td><a href="{% url 'orderdetail' order.id %}" class="btn btn-warning btn-sm">Details</a></td>
+                        <td>status</td>
+                        <td><a href="{% url 'delivery_order_detail' order.id %}" class="btn btn-warning btn-sm">Details</a></td>
                     </tr>
                     {% endfor %}
                 </tbody>

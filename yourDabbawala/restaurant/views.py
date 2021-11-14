@@ -5,7 +5,7 @@ from django.http import  HttpResponseRedirect
 from authentication.forms import *
 from .decorators import *
 from django.db.models import Q
-
+from django.views.generic import View, TemplateView, ListView, DetailView
 
 @is_authenticated
 @allowed_users(['restaurant'])
@@ -31,7 +31,9 @@ def add_item(request):
         restaurant = MenuItem(restaurant = restaurant_name)
         form = AddItem(instance=restaurant)
     items = MenuItem.objects.filter(restaurant=restaurant_name)
+   
     return render(request, 'restaurant_home.html', {'form': form, 'items':items, 'restaurant':restaurant_name})
+
 
 @is_authenticated
 @allowed_users(['restaurant'])
@@ -41,6 +43,7 @@ def delete_item(request,id):
         item = MenuItem.objects.get(pk=id)
         item.delete()
         return redirect('add_item')
+
 
 @is_authenticated
 @allowed_users(['restaurant'])
@@ -63,6 +66,7 @@ def edit_item(request,id):
         item = MenuItem.objects.get(pk=id)
         form = AddItem(instance=item)
     return render(request, 'edit_item.html', {'form' : form, 'item':item})
+
 
 @is_authenticated
 @allowed_users(['restaurant'])
@@ -91,24 +95,92 @@ def edit_profile(request):
 
     return render(request, 'restaurant_info.html', context={"form": res_info})
     
+@is_authenticated
 @allowed_users(['restaurant'])    
 def Orders(request):
     orders =  Order.objects.filter(Q(restaurant=request.user.restaurant.id)).filter( Q(status='1')|Q(status='2')|Q(status='3')).order_by('order_date')
 
     return render(request,'orders.html', context={'orders':orders})
 
+
+@is_authenticated
+@allowed_users(['restaurant']) 
+@is_order_owner
 def orderDetail(request,id):
     if request.method=='POST':
         item = Order.objects.get(pk=id)
         form = OrderDetail(request.POST,instance=item)
         if form.is_valid():
+            delivery = form.cleaned_data['delivery']
+            if delivery.restaurant and delivery.restaurant.id == request.user.restaurant.id:
+                item.status = form.cleaned_data['status']
+                item.delivery = delivery
+                item.save()
+                return redirect('orders')
+            else :
+                messages.warning(request, "Please select delivery person that you have in given list !!")
+                
+    
+    item = Order.objects.get(pk=id)
+    form = OrderDetail(instance=item)
+    delivery = Delivery.objects.filter(restaurant=request.user.restaurant.id)
+    return render(request, 'order_detail.html', context={"form":form, 'order':item, 'delivery':delivery})
+
+
+@is_authenticated
+@allowed_users(['restaurant'])
+def add_delivery_boy(request):
+    if request.method == 'POST':
+        form = AddDelivery(request.POST)
+        if form.is_valid():
+            user=form.cleaned_data['username']
+            user = User.objects.get(username=user)
+            user.delivery.restaurant = request.user.restaurant
+            user.delivery.save()
+            return redirect('add_delivery_boy')
+    else :
+        form = AddDelivery()
+    boys = Delivery.objects.filter(restaurant=request.user.restaurant.id)
+
+    return render(request,"add_delivery_boy.html",context={"form":form, "items":boys})
+
+@is_authenticated
+@allowed_users(['restaurant'])
+@is_delivery_owner
+def delete_delivery(request,id):
+    if request.method == "POST":
+        item = Delivery.objects.get(pk=id)
+        item.restaurant = None
+        item.save()
+        return redirect('add_delivery_boy')
+
+
+
+@is_authenticated
+@allowed_users(['delivery']) 
+def deliveryHome(request):
+    orders = Order.objects.filter(delivery = request.user.delivery.id).filter(status="2")
+    return render(request,'delivery_home.html', context={'orders':orders})
+
+@is_authenticated
+@allowed_users(['delivery']) 
+@is_delivery_order_owner
+def delivery_order_detail(request, id):
+    if request.method=='POST':
+        item = Order.objects.get(pk=id)
+        form = deliveryOrderDetail(request.POST,instance=item)
+        if form.is_valid():
             item.status = form.cleaned_data['status']
             item.save()
-            return redirect('orders')
+            return redirect('deliveryHome')
     else :
         item = Order.objects.get(pk=id)
-        form = OrderDetail(instance=item)
-    return render(request, 'order_detail.html', context={"form":form, 'order':item})
+        form = deliveryOrderDetail(instance=item)
+    return render(request,"delivery_order_detail.html",context={"form":form, 'order':item})
+
+
+
+
 
 def aboutUs(request):
     return render(request, 'about.html')
