@@ -9,6 +9,7 @@ from django.http import request
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import View, TemplateView, ListView, DetailView
 from restaurant.models import *
+from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 class Home(ListView):
@@ -19,6 +20,7 @@ class Home(ListView):
 class RestaurantDetail(DetailView):
     model = Restaurant
     template_name = "restaurantdetail.html"
+
 
 class Cart(View):
     def get(self, request, **kwargs):
@@ -31,6 +33,7 @@ class Cart(View):
             messages.warning(self.request, "You do not have an active order!")
             return redirect('customer:home')
 
+@login_required(login_url='login')
 def add_to_cart(request, pk):
     menu_item = get_object_or_404(MenuItem, id=pk)
     order_id = request.session.get('order_id', None)
@@ -59,6 +62,7 @@ def add_to_cart(request, pk):
         order.items.add(new_order_item)
     return redirect('customer:restaurantdetail', pk=menu_item.restaurant.id)
 
+@login_required(login_url='login')
 def delete_from_cart(request, pk):
     order_item = get_object_or_404(OrderItem, id=pk)
     order_id = request.session.get('order_id')
@@ -67,6 +71,7 @@ def delete_from_cart(request, pk):
     order_item.delete()
     return redirect('customer:cart')
 
+@login_required(login_url='login')
 def increase_qty(request, pk):
     order_item = get_object_or_404(OrderItem, id=pk)
     if order_item.quantity < 10:
@@ -74,6 +79,7 @@ def increase_qty(request, pk):
     order_item.save()
     return redirect('customer:cart')
 
+@login_required(login_url='login')
 def decrease_qty(request, pk):
     order_item = get_object_or_404(OrderItem, id=pk)
     if order_item.quantity > 1:
@@ -83,6 +89,7 @@ def decrease_qty(request, pk):
     order_item.save()
     return redirect('customer:cart')
 
+@login_required(login_url='login')
 def checkout(request):
     order_id = request.session.get('order_id')
     order = Order.objects.get(id=order_id)
@@ -91,6 +98,7 @@ def checkout(request):
     order.delete()
     del request.session['order_id']
     return redirect('customer:home')
+
 
 class CustomerProfile(DetailView):
     model = Customer
@@ -102,6 +110,8 @@ class CustomerProfile(DetailView):
         else:
             return redirect('customer:home')
         return super().dispatch(request, *args, **kwargs)
+
+
 
 class CustomerOrderDetail(DetailView):
     model = Order
@@ -116,6 +126,7 @@ class CustomerOrderDetail(DetailView):
         else:
             return redirect("/login/?next=/profile/")
         return super().dispatch(request, *args, **kwargs)
+
 
 class About(TemplateView):
     template_name = "about.html"

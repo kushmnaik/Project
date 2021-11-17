@@ -28,12 +28,21 @@
                 </thead>
                 <tbody>
                     {% for order in customer.order_set.all %}
-                    <tr>
+                    {% ifequal order.status|stringformat:"s" "1"  %} 
+                    <tr class="table-danger">
+                    {% endifequal %}
+                    {% ifequal order.status|stringformat:"s" "2"  %} 
+                    <tr class="table-warning">
+                    {% endifequal %}
+                    {% ifequal order.status|stringformat:"s" "3"  %} 
+                    <tr class="table-success">
+                    {% endifequal %}
+                    
                         <td>{{ forloop.counter }}</td>
                         <td>{{ order.restaurant.name }}</td>
                         <td>Rs. {{ order.total_cart_amount }}</td>
                         <td>{{ order.order_date }}</td>
-                        <td>status</td>
+                        <td>{{ order.get_status_display }}</td>
                         <td><a href="{% url 'customer:customerorderdetail' order.id %}" class="btn btn-warning btn-sm">Details</a></td>
                     </tr>
                     {% endfor %}
